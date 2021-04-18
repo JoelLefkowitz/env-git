@@ -1,0 +1,51 @@
+module.exports = function (grunt) {
+  grunt.initConfig({
+    exec: {
+      cspell: "npx cspell -c .cspell.json {*,.*,**/*}",
+      eslint: "npx eslint .",
+      jasmine: "jasmine-ts --config=.jasmine.json",
+      prettier: "prettier . --write",
+      quickdocs: "quickdocs .quickdocs.yml",
+      remark: "npx remark -r .remarkrc .",
+      sphinx: "sphinx-build docs build",
+    },
+  });
+
+  grunt.loadNpmTasks("grunt-exec");
+
+  grunt.registerTask(
+    "lint",
+    "Lint the source code",
+    ["cspell", "remark", "eslint"].map((i) =>
+      "exec:".concat(i)
+    )
+  );
+
+  grunt.registerTask(
+    "format",
+    "Format the source code",
+    ["prettier"].map((i) => "exec:".concat(i))
+  );
+
+  grunt.registerTask(
+    "tests:unit", "Run unit tests", "exec:jasmine"
+  );
+
+  grunt.registerTask(
+    "docs:generate",
+    "Generate a Sphinx documentation configuration",
+    "exec:quickdocs"
+  );
+
+  grunt.registerTask(
+    "docs:build",
+    "Build documentation from a Sphinx configuration",
+    "exec:sphinx"
+  );
+
+  grunt.registerTask(
+    "precommit",
+    "Run a sequence of precommit quality control tasks",
+    ["lint", "tests:unit", "docs:generate"]
+  );
+};

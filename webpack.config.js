@@ -3,6 +3,9 @@ const path = require("path");
 module.exports = {
   mode: "production",
   entry: "./src/main.ts",
+  experiments: {
+    outputModule: true,
+  },
   externals: ["child_process"],
   output: {
     path: path.resolve("dist"),
